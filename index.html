@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធសេដ្ឋកិច្ច និងពិន្ទុសកលមហាសិរី - Mohaserei System Update Economy (MSN)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1b4d3e;
+            --secondary-color: #d4af37;
+            --dark-color: #111827;
+            --light-bg: #f4f6f9;
+            --white: #ffffff;
+            --border-color: #e5e7eb;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kantumruy Pro', sans-serif;
+        }
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-color);
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Navigation */
+        aside {
+            width: 280px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .brand-box {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.15);
+        }
+        .brand-box img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+        }
+        .brand-box h1 {
+            font-size: 1.05rem;
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        .brand-box p {
+            font-size: 0.75rem;
+            color: #d1d5db;
+        }
+        .nav-menu {
+            list-style: none;
+            padding: 15px 0;
+            flex-grow: 1;
+        }
+        .nav-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 20px;
+            color: #e5e7eb;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .nav-menu li a:hover, .nav-menu li a.active {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        /* Main Content */
+        main {
+            margin-left: 280px;
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--white);
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        header h2 {
+            color: var(--primary-color);
+            font-size: 1.35rem;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        .user-profile i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        /* Summary Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--secondary-color);
+        }
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 6px;
+        }
+        .stat-card .value {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .stat-card small {
+            color: #059669;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        /* Section Cards */
+        .section-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .section-card h3 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        /* Two-Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        @media (max-width: 992px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+        /* Simulator Form */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        .form-group input, .form-group select {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.92rem;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+        }
+        .btn-calc {
+            grid-column: 1 / -1;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.98rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 5px;
+        }
+        .btn-calc:hover {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+        }
+        /* Result Highlight Box */
+        .result-box {
+            margin-top: 20px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        .result-item span {
+            display: block;
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+        .result-item strong {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 11px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.88rem;
+        }
+        th {
+            background-color: #f8fafc;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        tbody tr:hover {
+            background-color: #f1f5f9;
+        }
+        .formula-banner {
+            background: #fffbeb;
+            border-left: 4px solid var(--secondary-color);
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        @media (max-width: 768px) {
+            aside { width: 100%; height: auto; position: relative; }
+            main { margin-left: 0; padding: 15px; }
+            body { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside>
+        <div class="brand-box">
+            <img src="mohaserey.jpg" alt="Mohaserei Logo" onerror="this.src='https://via.placeholder.com/50?text=MSN'">
+            <div>
+                <h1>បណ្ដាញមហាសិរី</h1>
+                <p>Mohaserei Network (MSN)</p>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="moha_serei_system_update_dashboard.html"><i class="fas fa-chart-line"></i> ផ្ទាំងគ្រប់គ្រងជាតិ (Dashboard)</a></li>
+            <li><a href="moha_serei_system_update_registration.html"><i class="fas fa-user-plus"></i> ចុះឈ្មោះសមាជិកបណ្ដាញ</a></li>
+            <li><a href="moha_serei_system_update_member.html"><i class="fas fa-users"></i> បញ្ជីសមាជិកទូទាំងប្រទេស</a></li>
+            <li><a href="#" class="active"><i class="fas fa-coins"></i> កម្រិតសេដ្ឋកិច្ច និងពិន្ទុ (UES)</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+        <header>
+            <h2>ប្រព័ន្ធតម្លៃសេដ្ឋកិច្ចសកល និងការបែងចែកផលប្រយោជន៍ (MSN-ECO-001 & MSN-FIN-004)</h2>
+            <div class="user-profile">
+                <i class="fas fa-balance-scale"></i>
+                <span>Participation Economy Engine</span>
+            </div>
+        </header>
+
+        <!-- Key Economic Indicators -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>តម្លៃកាក់ MSN បច្ចុប្បន្ន (COIN-002)</h3>
+                <div class="value">$1.48 / MSN</div>
+                <small><i class="fas fa-arrow-up"></i> គណនាតាមទុនបម្រុងទ្រព្យសកម្ម</small>
+            </div>
+            <div class="stat-card">
+                <h3>ពិន្ទុសេដ្ឋកិច្ចសកលសរុប (Network UES)</h3>
+                <div class="value">48,500,000 ពិន្ទុ</div>
+                <small>គ្របដណ្ដប់ 25 រាជធានី-ខេត្ត</small>
+            </div>
+            <div class="stat-card">
+                <h3>កញ្ចប់ភាគលាភសមាជិក (Reward Pool 20%)</h3>
+                <div class="value">$3,700,000</div>
+                <small>បែងចែកតាមសមាមាត្រ UES</small>
+            </div>
+            <div class="stat-card">
+                <h3>មូលនិធិពង្រីកអាជីវកម្ម (35%)</h3>
+                <div class="value">$6,475,000</div>
+                <small>គាំទ្រសហគ្រាស និងកសិកម្ម</small>
+            </div>
+        </div>
+
+        <!-- Interactive UES & Profit Sharing Calculator -->
+        <div class="section-card">
+            <h3><i class="fas fa-calculator"></i> កម្មវិធីគណនាពិន្ទុសេដ្ឋកិច្ចសកល (UES) និងចំណែកកម្មសិទ្ធិស្វ័យប្រវត្តិ (ENG-001)</h3>
+            <div class="formula-banner">
+                <strong>រូបមន្តស្នូល៖</strong> <code>UES = Financial Score + Business Score + Knowledge Score + Network Score + Leadership Score + Social Score</code><br>
+                <strong>រូបមន្តតម្លៃមូលធនមនុស្ស (HCV)៖</strong> <code>HCV = (FC × 25%) + (BC × 25%) + (KC × 20%) + (NC × 20%) + (SC × 10%)</code>
+            </div>
+
+            <div class="calc-grid">
+                <div class="form-group">
+                    <label>ប្រភេទចូលរួមរបស់សមាជិក</label>
+                    <select id="calcRole">
+                        <option value="1">១. អ្នកមានកម្លាំងពលកម្ម+ពេលវេលា (លក់/ដឹកជញ្ជូន)</option>
+                        <option value="2">២. អ្នកមានចំណេះជំនាញ (បណ្ដុះបណ្ដាល/បច្ចេកវិទ្យា)</option>
+                        <option value="3">៣. អ្នកមានធនធាន (ទ្រព្យសម្បត្តិ+ហិរញ្ញវត្ថុ)</option>
+                        <option value="4">៤. អ្នកមានបណ្ដាញទំនាក់ទំនង (ធនធានមនុស្ស+អាជីវកម្ម)</option>
+                        <option value="5">៥. អ្នកម្ចាស់អាជីវកម្ម (តូប/សិប្បកម្ម/រោងចក្រ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ប្រាក់សន្សំ ឬ ទិញទំនិញ ($1 = 1 ពិន្ទុ)</label>
+                    <input type="number" id="inSaveBuy" value="500" min="0">
+                </div>
+                <div class="form-group">
+                    <label>ចំណូលលក់/អាជីវកម្ម ($1 = 2 ពិន្ទុ)</label>
+                    <input type="number" id="inSales" value="1200" min="0">
+                </div>
+                <div class="form-group">
+                    <label>ទុនវិនិយោគ ($1 = 3 ពិន្ទុ)</label>
+                    <input type="number" id="inInvest" value="1000" min="0">
+                </div>
+                <div class="form-group">
+                    <label>ម៉ោងបង្រៀន/បណ្ដុះបណ្ដាល (1 ម៉ោង = 30 ពិន្ទុ)</label>
+                    <input type="number" id="inTeach" value="20" min="0">
+                </div>
+                <div class="form-group">
+                    <label>ណែនាំសមាជិកថ្មី (1 នាក់ = 100 ពិន្ទុ)</label>
+                    <input type="number" id="inNetwork" value="15" min="0">
+                </div>
+                <div class="form-group">
+                    <label>សកម្មភាពស្ម័គ្រចិត្ត/សហគមន៍ (1 លើក = 50 ពិន្ទុ)</label>
+                    <input type="number" id="inSocial" value="10" min="0">
+                </div>
+                <button class="btn-calc" onclick="calculateUES()"><i class="fas fa-cogs"></i> គណនាពិន្ទុ UES កម្រិតតំណែង និងភាគលាភ</button>
+            </div>
+
+            <div class="result-box">
+                <div class="result-item">
+                    <span>ពិន្ទុសេដ្ឋកិច្ចសកលសរុប (Total UES)</span>
+                    <strong id="resUES">8,500 ពិន្ទុ</strong>
+                </div>
+                <div class="result-item">
+                    <span>កម្រិតតំណែងស្វ័យប្រវត្តិ (RANK-001)</span>
+                    <strong id="resRank">Associate</strong>
+                </div>
+                <div class="result-item">
+                    <span>កម្រិតអត្ថប្រយោជន៍ (BEN-001)</span>
+                    <strong id="resBenefit">Silver (Profit Sharing + Training)</strong>
+                </div>
+                <div class="result-item">
+                    <span>ភាគលាភប៉ាន់ស្មានពី Reward Pool</span>
+                    <strong id="resShare">$648.45</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts: Profit Distribution & Capital Weight -->
+        <div class="two-col">
+            <div class="section-card">
+                <h3><i class="fas fa-chart-pie"></i> គោលការណ៍បែងចែកប្រាក់ចំណេញសុទ្ធ (MSN-FIN-004)</h3>
+                <canvas id="profitDistChart" height="190"></canvas>
+            </div>
+            <div class="section-card">
+                <h3><i class="fas fa-layer-group"></i> តារាងពិន្ទុសកម្មភាព (Universal Contribution Engine)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ផ្នែកសកម្មភាព</th>
+                            <th>បរិមាណ</th>
+                            <th>ពិន្ទុទទួលបាន</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>សន្សំ / ទិញទំនិញ</td>
+                            <td>$1</td>
+                            <td><strong>1 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>លក់ទំនិញ / សេវាកម្ម</td>
+                            <td>$1</td>
+                            <td><strong>2 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>វិនិយោគក្នុងគម្រោង MSN</td>
+                            <td>$1</td>
+                            <td><strong>3 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ចូលរួមវគ្គបណ្ដុះបណ្ដាល</td>
+                            <td>1 ម៉ោង</td>
+                            <td><strong>20 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>បង្រៀន / បណ្ដុះបណ្ដាល</td>
+                            <td>1 ម៉ោង</td>
+                            <td><strong>30 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>បង្កើតមាតិកាចំណេះដឹង</td>
+                            <td>1 មាតិកា</td>
+                            <td><strong>50 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ណែនាំសមាជិកថ្មី</td>
+                            <td>1 នាក់</td>
+                            <td><strong>100 ពិន្ទុ</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ដឹកនាំសកម្មភាពបណ្ដាញ</td>
+                            <td>1 គម្រោង</td>
+                            <td><strong>200 ពិន្ទុ</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Leadership Ranking & Benefits Table -->
+        <div class="section-card">
+            <h3><i class="fas fa-award"></i> ឋានានុក្រមតំណែងស្វ័យប្រវត្តិ និងអត្ថប្រយោជន៍ (MSN-RANK-001 & BEN-001)</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>កម្រិតតំណែង (Leadership Rank)</th>
+                            <th>ពិន្ទុ UES អប្បបរមា</th>
+                            <th>កម្រិតអត្ថប្រយោជន៍ (Benefits Tier)</th>
+                            <th>សិទ្ធិទទួលបានក្នុងប្រព័ន្ធ MSN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Member</td>
+                            <td>0</td>
+                            <td>Bronze</td>
+                            <td>E-Wallet, ពិន្ទុរង្វាន់ (Rewards)</td>
+                        </tr>
+                        <tr>
+                            <td>Associate</td>
+                            <td>1,000</td>
+                            <td>Silver</td>
+                            <td>ចំណែកភាគលាភ (Profit Sharing), វគ្គបណ្ដុះបណ្ដាល</td>
+                        </tr>
+                        <tr>
+                            <td>Coordinator</td>
+                            <td>10,000</td>
+                            <td>Silver+</td>
+                            <td>ដឹកនាំក្រុមមូលដ្ឋាន (30 នាក់), ភាគលាភបណ្ដាញ</td>
+                        </tr>
+                        <tr>
+                            <td>Supervisor</td>
+                            <td>50,000</td>
+                            <td>Gold</td>
+                            <td>សិទ្ធិវិនិយោគគម្រោងជាតិ, កម្មវិធីភាពជាអ្នកដឹកនាំ</td>
+                        </tr>
+                        <tr>
+                            <td>Manager</td>
+                            <td>150,000</td>
+                            <td>Gold+</td>
+                            <td>គ្រប់គ្រងគម្រោងថ្នាក់ស្រុក/ខណ្ឌ, ភាគលាភគ្រប់គ្រង</td>
+                        </tr>
+                        <tr>
+                            <td>Director</td>
+                            <td>500,000</td>
+                            <td>Platinum</td>
+                            <td>កម្មវិធីថ្នាក់ប្រតិបត្តិ (Executive Program), អាទិភាពដៃគូ</td>
+                        </tr>
+                        <tr>
+                            <td>Provincial Director</td>
+                            <td>2,000,000</td>
+                            <td>Platinum+</td>
+                            <td>ដឹកនាំយុទ្ធសាស្ត្រថ្នាក់ខេត្ត/រាជធានី</td>
+                        </tr>
+                        <tr>
+                            <td>Regional Director</td>
+                            <td>5,000,000</td>
+                            <td>Diamond</td>
+                            <td>ដឹកនាំថ្នាក់តំបន់, សិទ្ធិអភិបាលកិច្ចថ្នាក់ជាតិ</td>
+                        </tr>
+                        <tr>
+                            <td>National Director</td>
+                            <td>20,000,000</td>
+                            <td>Diamond Executive</td>
+                            <td>សភាតំណាងសមាជិកជាតិ (National Member Assembly)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function calculateUES() {
+            const saveBuy = parseFloat(document.getElementById('inSaveBuy').value) || 0;
+            const sales = parseFloat(document.getElementById('inSales').value) || 0;
+            const invest = parseFloat(document.getElementById('inInvest').value) || 0;
+            const teach = parseFloat(document.getElementById('inTeach').value) || 0;
+            const network = parseFloat(document.getElementById('inNetwork').value) || 0;
+            const social = parseFloat(document.getElementById('inSocial').value) || 0;
+
+            const ues = (saveBuy * 1) + (sales * 2) + (invest * 3) + (teach * 30) + (network * 100) + (social * 50);
+
+            let rank = "Member";
+            let benefit = "Bronze (E-Wallet + Rewards)";
+
+            if (ues >= 20000000) {
+                rank = "National Director";
+                benefit = "Diamond Executive (National Governance)";
+            } else if (ues >= 5000000) {
+                rank = "Regional Director";
+                benefit = "Diamond (National Governance Rights)";
+            } else if (ues >= 2000000) {
+                rank = "Provincial Director";
+                benefit = "Platinum+ (Provincial Strategy)";
+            } else if (ues >= 500000) {
+                rank = "Director";
+                benefit = "Platinum (Executive + Partnership)";
+            } else if (ues >= 150000) {
+                rank = "Manager";
+                benefit = "Gold+ (District Management)";
+            } else if (ues >= 50000) {
+                rank = "Supervisor";
+                benefit = "Gold (Investment + Leadership)";
+            } else if (ues >= 10000) {
+                rank = "Coordinator";
+                benefit = "Silver+ (Team Leadership)";
+            } else if (ues >= 1000) {
+                rank = "Associate";
+                benefit = "Silver (Profit Sharing + Training)";
+            }
+
+            // Reward Pool formula: (Member UES / Network UES) * Reward Pool ($3,700,000)
+            const networkUES = 48500000;
+            const rewardPool = 3700000;
+            const share = (ues / networkUES) * rewardPool;
+
+            document.getElementById('resUES').innerText = ues.toLocaleString() + " ពិន្ទុ";
+            document.getElementById('resRank').innerText = rank;
+            document.getElementById('resBenefit').innerText = benefit;
+            document.getElementById('resShare').innerText = "$" + share.toFixed(2);
+        }
+
+        // Net Profit Distribution Chart (MSN-FIN-004)
+        const ctxProfit = document.getElementById('profitDistChart').getContext('2d');
+        new Chart(ctxProfit, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    '35% មូលនិធិពង្រីកអាជីវកម្ម (Expansion)',
+                    '20% មូលនិធិបម្រុងស្ថិរភាព (Reserve)',
+                    '20% កញ្ចប់ភាគលាភសមាជិក (Member Reward)',
+                    '10% មូលនិធិបច្ចេកវិទ្យា (Technology)',
+                    '10% អភិវឌ្ឍធនធានមនុស្ស (Human Capital)',
+                    '5% មូលនិធិអភិវឌ្ឍសហគមន៍ (Social)'
+                ],
+                datasets: [{
+                    data: [35, 20, 20, 10, 10, 5],
+                    backgroundColor: [
+                        '#1b4d3e',
+                        '#d4af37',
+                        '#10b981',
+                        '#3b82f6',
+                        '#8b5cf6',
+                        '#f59e0b'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Kantumruy Pro', size: 12 }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Run initial calculation
+        calculateUES();
+    </script>
+</body>
+</html>
